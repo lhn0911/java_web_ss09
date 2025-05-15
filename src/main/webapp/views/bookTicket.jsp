@@ -15,7 +15,7 @@
 <h2>Đặt vé cho lịch chiếu: ${schedule.showTime}</h2>
 <form action="submitBooking" method="post">
     <input type="hidden" name="scheduleId" value="${schedule.id}"/>
-    <input type="hidden" name="customerId" value="1"/> <!-- tạm hardcode -->
+    <input type="hidden" name="customerId" value="1"/>
     <c:forEach var="seat" items="${seats}">
         <input type="checkbox" name="seatIds" value="${seat.id}"
                <c:if test="${seat.status == 'booked'}">disabled</c:if>/>

@@ -51,14 +51,14 @@ public class ScheduleDaoImp implements ScheduleDao{
 
         try {
             conn = ConnectionDB.openConnection();
-            callSt = conn.prepareCall("{call find_byId(?)}");
+            callSt = conn.prepareCall("{call find_schedule_byId(?)}");
             callSt.setLong(1, id);
             ResultSet rs = callSt.executeQuery();
             if (rs.next()) {
                 schedule = new Schedule();
                 schedule.setId(rs.getLong("id"));
-                schedule.setShowTime(rs.getDate("show_time"));
-                schedule.setScreenRoomId(rs.getLong("screen_room_id"));
+                schedule.setShowTime(rs.getTimestamp("show_time"));
+                schedule.setScreenRoomId(rs.getLong("screen_room_idroom_id"));
                 schedule.setAvailableSeats(rs.getInt("available_seats"));
                 schedule.setFormat(rs.getString("format"));
             }

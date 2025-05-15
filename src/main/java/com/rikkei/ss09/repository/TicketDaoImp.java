@@ -1,7 +1,7 @@
 package com.rikkei.ss09.repository;
 
-import com.rikkei.ss09.model.Seat;
 import com.rikkei.ss09.model.Ticket;
+import com.rikkei.ss09.model.Seat;
 import com.rikkei.ss09.utils.ConnectionDB;
 import org.springframework.stereotype.Repository;
 
@@ -24,7 +24,7 @@ public class TicketDaoImp implements TicketDao {
             conn.setAutoCommit(false);
 
             // Gọi procedure thêm vé
-            callTicket = conn.prepareCall("{call sp_addTicket(?, ?, ?, ?)}");
+            callTicket = conn.prepareCall("{call add_ticket(?, ?, ?, ?)}");
             callTicket.setLong(1, ticket.getCustomerId());
             callTicket.setLong(2, ticket.getScheduleId());
             callTicket.setDouble(3, ticket.getTotalMoney());
@@ -32,22 +32,26 @@ public class TicketDaoImp implements TicketDao {
             callTicket.execute();
             Long ticketId = callTicket.getLong(4);
 
+            // Set ticket ID
+            ticket.setId(ticketId);
+
             List<Seat> seats = ticket.getListSeat();
             for (Seat seat : seats) {
                 // Gọi procedure thêm ticket_seat
-                callLink = conn.prepareCall("{call sp_addTicketSeat(?, ?)}");
+                callLink = conn.prepareCall("{call add_ticket_seat(?, ?)}");
                 callLink.setLong(1, ticketId);
                 callLink.setLong(2, seat.getId());
                 callLink.execute();
 
                 // Gọi procedure cập nhật trạng thái ghế
-                callSeat = conn.prepareCall("{call sp_bookSeat(?)}");
+                callSeat = conn.prepareCall("{call update_seat_status(?, ?)}");
                 callSeat.setLong(1, seat.getId());
+                callSeat.setString(2, "booked");
                 callSeat.execute();
             }
 
             // Gọi procedure cập nhật số lượng ghế trống
-            callUpdateSeat = conn.prepareCall("{call sp_updateAvailableSeats(?, ?)}");
+            callUpdateSeat = conn.prepareCall("{call decrease_available_seats(?, ?)}");
             callUpdateSeat.setLong(1, ticket.getScheduleId());
             callUpdateSeat.setInt(2, seats.size());
             callUpdateSeat.execute();

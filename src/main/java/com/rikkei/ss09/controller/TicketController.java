@@ -29,12 +29,18 @@ public class TicketController {
     @GetMapping("/book")
     public String bookTicket(@RequestParam("scheduleId") Long scheduleId, Model model) {
         Schedule schedule = scheduleService.findById(scheduleId);
+        if (schedule == null) {
+            model.addAttribute("errorMessage", "Lịch chiếu không tồn tại hoặc đã bị xóa.");
+            return "errorPage";
+        }
         List<Seat> seats = seatService.findAllByScreenRoom(schedule.getScreenRoomId());
 
         model.addAttribute("schedule", schedule);
         model.addAttribute("seats", seats);
         return "bookTicket";
     }
+
+
 
     @PostMapping("/submitBooking")
     public String submitBooking(@RequestParam("scheduleId") Long scheduleId,

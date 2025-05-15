@@ -17,6 +17,6 @@ public class SeatServiceImp implements SeatService {
 
     @Override
     public List<Seat> findSeatsByIds(List<Long> seatIds) {
-        return List.of();
+        return seatDao.findSeatsByIds(seatIds);
     }
 }

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.PreparedStatement;
 
 @Repository
 public class SeatDaoImp implements SeatDao {
@@ -22,7 +23,7 @@ public class SeatDaoImp implements SeatDao {
 
         try {
             conn = ConnectionDB.openConnection();
-            callSt = conn.prepareCall("{call sp_find_Seats_By_ScreenRoomId(?)}");
+            callSt = conn.prepareCall("{call find_seats_by_screenroom(?)}");
             callSt.setLong(1, screenRoomId);
             ResultSet rs = callSt.executeQuery();
             while (rs.next()) {
@@ -47,11 +48,24 @@ public class SeatDaoImp implements SeatDao {
         List<Seat> seats = new ArrayList<>();
         Connection conn = null;
         CallableStatement callSt = null;
+
         try {
             conn = ConnectionDB.openConnection();
-            callSt = conn.prepareCall("{call sp_find_Seats_By_ScreenRoomId(?)}");
-            callSt.setLong(1, screenRoomId);
+
+            // chuyển list<Long> thành chuỗi "1,2,3"
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < seatIds.size(); i++) {
+                sb.append(seatIds.get(i));
+                if (i < seatIds.size() - 1) {
+                    sb.append(",");
+                }
+            }
+
+            callSt = conn.prepareCall("{call find_seats_by_ids(?)}");
+            callSt.setString(1, sb.toString());
+
             ResultSet rs = callSt.executeQuery();
+
             while (rs.next()) {
                 Seat seat = new Seat();
                 seat.setId(rs.getLong("id"));
@@ -63,10 +77,15 @@ public class SeatDaoImp implements SeatDao {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            ConnectionDB.closeConnection(conn, callSt);
+            try {
+                if (callSt != null) callSt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
         return seats;
-
     }
+
 }

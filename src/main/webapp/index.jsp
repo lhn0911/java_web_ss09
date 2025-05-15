@@ -9,7 +9,7 @@
 </h1>
 <br/>
 <a href="login">Bài 1</a><br>
-<a href="movie">Bài 2,3</a><br>
+<a href="movie">Bài 2,3,4</a><br>
 
 </body>
 </html>

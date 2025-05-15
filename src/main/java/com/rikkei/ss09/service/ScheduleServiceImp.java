@@ -16,4 +16,8 @@ public class ScheduleServiceImp implements ScheduleService {
     public List<Schedule> findAllScheduleByMovie(Long movieId) {
         return scheduleDao.findAllScheduleByMovie(movieId);
     }
+    @Override
+    public Schedule findById(Long id) {
+        return scheduleDao.findById(id);
+    }
 }

@@ -51,7 +51,7 @@ public class MovieDaoImp implements MovieDao {
         CallableStatement callSt = null;
         try {
             conn = ConnectionDB.openConnection();
-            callSt = conn.prepareCall("{call find_byId(?)}");
+            callSt = conn.prepareCall("{call find_ById(?)}");
             callSt.setLong(1, id);
             ResultSet rs = callSt.executeQuery();
             if (rs.next()) {

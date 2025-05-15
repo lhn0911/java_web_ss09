@@ -29,6 +29,7 @@
         <th>Phòng chiếu</th>
         <th>Ghế trống</th>
         <th>Định dạng</th>
+        <th>Đặt vé</th>
     </tr>
     <c:forEach var="schedule" items="${schedules}">
         <tr>
@@ -36,6 +37,9 @@
             <td>${schedule.screenRoomId}</td>
             <td>${schedule.availableSeats}</td>
             <td>${schedule.format}</td>
+            <td>
+                <a href="book?scheduleId=${schedule.id}">Đặt vé</a>
+            </td>
         </tr>
     </c:forEach>
 </table>
